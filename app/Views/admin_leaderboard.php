@@ -22,18 +22,21 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Username</th>
-                        <th>Contributions</th>
+                        <th>User Id</th>
+                        <th>Name</th>
+                        <th>Game Stars</th>
+                        <th>Review Stars</th>
+                        <th>Total Stars</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($leaderboard as $user): ?>
                         <tr>
-                            <td>
-                                <img src="<?= esc($user['avatar_url'], 'attr') ?>" alt="<?= esc($user['login']) ?>" width="32" height="32" class="rounded-circle me-2">
-                                <a href="<?= esc($user['html_url'], 'attr') ?>" target="_blank"><?= esc($user['login']) ?></a>
-                            </td>
-                            <td><?= esc($user['contributions']) ?></td>
+                            <td><?= esc($user['id']) ?></td>
+                            <td><?= esc($user['firstname']) . " " . esc($user['lastname']) ?></td>
+                            <td><?= esc($user['gameStars']) ?></td>
+                            <td><?= esc($user['reviewStars']) ?></td>
+                            <td><?= esc($user['gameStars']) + esc($user['reviewStars']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
