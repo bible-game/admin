@@ -14,12 +14,18 @@ class Admin extends BaseController
 
         try {
             $response = $client->get('');
-            $data['leaderboard'] = json_decode($response->getBody(), true);
+            $leaderboard= json_decode($response->getBody(), true);
 
-            usort($data, function($a, $b) {
-                return ($b->gameStars + $b->reviewStars) - ($a->gameStars + $a->reviewStars);
+            usort($leaderboard, function($a, $b) {
+                $a = (object)$a;
+                $b = (object)$b;
+                $aStars = $a->gameStars + $a->reviewStars;
+                $bStars = $b->gameStars + $b->reviewStars;
+                if ($aStars == $bStars) return 0;
+                return ($aStars < $bStars) ? 1 : -1;
             });
-            print_r($data[0][0]);
+
+            $data['leaderboard'] = $leaderboard;
 
         } catch (\Exception $e) {
             // Log the error
@@ -27,6 +33,6 @@ class Admin extends BaseController
             $data['error'] = 'Could not fetch leaderboard data. Please check the logs.';
         }
 
-        return view('admin_leaderboard', $data[0]);
+        return view('admin_leaderboard', $data);
     }
 }
