@@ -1,29 +1,44 @@
-FROM php:7.2.26-apache
+FROM php:8.2-apache
 
-RUN apt-get update
-RUN apt-get upgrade -y
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libicu-dev \
+    libpq-dev \
+    zlib1g-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get install --fix-missing -y libpq-dev
-RUN apt-get install --no-install-recommends -y libpq-dev
-RUN apt-get install -y libxml2-dev libbz2-dev zlib1g-dev
-RUN apt-get -y install libsqlite3-dev libsqlite3-0 mariadb-client curl exif ftp
-RUN docker-php-ext-install intl
-RUN apt-get -y install --fix-missing zip unzip
+# Install PHP extensions
+RUN docker-php-ext-install \
+    intl \
+    pdo \
+    pdo_mysql \
+    mysqli \
+    gd
 
-# Composer
-RUN curl -sS https://getcomposer.org/installer | php
-RUN mv composer.phar /usr/local/bin/composer
-RUN chmod +x /usr/local/bin/composer
-RUN composer self-update
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-ADD conf/apache.conf /etc/apache2/sites-available/000-default.conf
+# Set working directory
+WORKDIR /var/www/html
 
-RUN cd /var/www/html
-RUN composer create-project codeigniter4/appstarter codeigniter4 -s rc
-RUN ls
-RUN chmod -R 0777 /var/www/html/codeigniter4/writable
+# Copy existing application directory contents
+COPY . /var/www/html
 
-RUN apt-get clean \
-    && rm -r /var/lib/apt/lists/*
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-VOLUME /var/www/html
+# Set permissions for writable directory
+RUN chown -R www-data:www-data /var/www/html/writable
+
+# Configure Apache
+RUN a2enmod rewrite
+COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
+
+# Expose port 80 and start apache
+EXPOSE 80
+CMD ["apache2-foreground"]
