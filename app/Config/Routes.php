@@ -7,3 +7,4 @@ use CodeIgniter\Router\RouteCollection;
  */
 //$routes->get('/', 'Home::index');
 $routes->get('/', 'Admin::index');
+$routes->get('/passage', 'Passage::index');
