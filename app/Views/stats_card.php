@@ -109,7 +109,7 @@
 
             const S = computeInsights(rows);
             root.innerHTML = card(`
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
         <!-- Overview -->
         <div>
           <div class="text-sm text-gray-500 mb-2">Overview</div>
@@ -165,13 +165,13 @@
 
         <!-- Popularity -->
         <div>
-          <div class="text-sm text-gray-500 mb-2">Popularity</div>
+          <div class="text-sm text-gray-500 mb-2 underlined">Popularity</div>
           <ul class="space-y-1 text-sm">
-            <li><span class="text-gray-500">Top (max ${S.maxItems.length}):</span>
-              ${S.maxItems.length ? S.maxItems.map(d=>`<span class="[font-variant-numeric:tabular-nums]">${labelOf(d)}</span> (${+d.value||0})`).join(', ') : '<span class="text-gray-400">—</span>'}
+            <li><span class="text-gray-500">Top:</span>
+              <span class="text-xs">${S.maxItems.length ? S.maxItems.map(d=>`<span class="[font-variant-numeric:tabular-nums]">${labelOf(d)}</span> (${+d.value||0})`).join(', ') : '<span class="text-gray-400">—</span>'}</span>
             </li>
-            <li><span class="text-gray-500">Bottom (min ${S.minItems.length}):</span>
-              ${S.minItems.length ? S.minItems.map(d=>`<span class="[font-variant-numeric:tabular-nums]">${labelOf(d)}</span> (${+d.value||0})`).join(', ') : '<span class="text-gray-400">—</span>'}
+            <li><span class="text-gray-500">Bottom:</span>
+              <span class="text-xs">${S.minItems.length ? S.minItems.map(d=>`<span class="[font-variant-numeric:tabular-nums]">${labelOf(d)}</span>(${+d.value||0})`).join(', ') : '<span class="text-gray-400">—</span>'}</span>
             </li>
           </ul>
         </div>
