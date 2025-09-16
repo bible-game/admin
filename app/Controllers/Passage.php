@@ -47,7 +47,7 @@ class Passage extends BaseController
         return $this->response->setJSON($data);
     }
 
-    private function getEarliestDate(): ?string
+    public function getEarliestDate(): ?string
     {
         $historyUrl = $this->passageServiceBaseUrl . '/daily/history';
         $historyResponse = $this->fetchUrl($historyUrl);
