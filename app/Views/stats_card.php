@@ -48,16 +48,6 @@
             const i = Math.floor(H), f = H - i;
             return i + 1 < sorted.length ? sorted[i]*(1-f) + sorted[i+1]*f : sorted[i];
         }
-        function gini(arr){
-            const n = arr.length;
-            if (!n) return 0;
-            const s = arr.slice().sort((a,b)=>a-b);
-            const total = s.reduce((a,b)=>a+b,0);
-            if (total === 0) return 0;
-            let cum = 0, lorenzArea = 0;
-            for (let i=0;i<n;i++){ cum += s[i]; lorenzArea += cum; }
-            return 1 - 2*(lorenzArea/(n*total));
-        }
         const fmt = x => (Math.round((x + Number.EPSILON) * 100) / 100).toString();
         const pct = x => ((x*100)|0) + '%';
         const labelOf = d => {
@@ -95,12 +85,8 @@
             const minItems = rows.filter(d => (+d.value||0) === minVal).slice(0,3);
             const maxItems = rows.filter(d => (+d.value||0) === maxVal).slice(0,3);
 
-            const giniVal = gini(vals);
-            const top5 = rows.slice().sort((a,b)=>(+b.value||0)-(+a.value||0)).slice(0,5);
-            const top5Share = sum ? top5.reduce((a,d)=>a + (+d.value||0), 0)/sum : 0;
-
             return { n,sum,mean,median,mode,stdev,zeros,p05,p25,p50,p75,p95,iqr,
-                minVal,maxVal,minItems,maxItems,gini:giniVal,top5Share };
+                minVal,maxVal,minItems,maxItems };
         }
 
         function render(rows){
@@ -114,25 +100,11 @@
         <div>
           <div class="text-sm text-gray-500 mb-2">Overview</div>
           <ul class="space-y-1 text-sm">
-            <li><span class="text-gray-500">Total:</span>
-                <span class="font-medium [font-variant-numeric:tabular-nums]">${S.sum.toLocaleString()}</span></li>
-            <li class="flex flex-wrap items-center gap-x-2">
-              <span class="text-gray-500">Mean:</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.mean)}</span>
-              <span class="text-gray-300">·</span>
-              <span class="text-gray-500">Median:</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.median)}</span>
-              <span class="text-gray-300">·</span>
-              <span class="text-gray-500">Mode:</span><span class="[font-variant-numeric:tabular-nums]">${S.mode}</span>
+            <li>
+                <span class="text-gray-500">Total: ${S.sum.toLocaleString()}</span>
             </li>
-            <li class="flex flex-wrap items-center gap-x-2">
-              <span class="text-gray-500">Std dev:</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.stdev)}</span>
-              <span class="text-gray-300">·</span>
-              <span class="text-gray-500">Zeros:</span><span class="[font-variant-numeric:tabular-nums]">${S.zeros}</span>
-              <span class="text-gray-400">(${pct(S.zeros/(S.n||1))})</span>
-            </li>
-            <li class="flex flex-wrap items-center gap-x-2">
-              <span class="text-gray-500">Inequality (Gini):</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.gini)}</span>
-              <span class="text-gray-300">·</span>
-              <span class="text-gray-500">Top 5 share:</span><span class="[font-variant-numeric:tabular-nums]">${pct(S.top5Share)}</span>
+            <li>
+                <span class="text-gray-500">Unselected: </span><span class="[font-variant-numeric:tabular-nums]">${S.zeros} / 1,189</span>
             </li>
           </ul>
         </div>
@@ -144,21 +116,14 @@
             <li class="flex flex-wrap items-center gap-x-2">
               <span class="text-gray-500">Min:</span><span class="[font-variant-numeric:tabular-nums]">${S.minVal}</span>
               <span class="text-gray-300">·</span>
-              <span class="text-gray-500">P5:</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.p05)}</span>
-              <span class="text-gray-300">·</span>
-              <span class="text-gray-500">P25:</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.p25)}</span>
-            </li>
-            <li class="flex flex-wrap items-center gap-x-2">
-              <span class="text-gray-500">Median (P50):</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.p50)}</span>
-              <span class="text-gray-300">·</span>
-              <span class="text-gray-500">P75:</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.p75)}</span>
-              <span class="text-gray-300">·</span>
-              <span class="text-gray-500">P95:</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.p95)}</span>
-            </li>
-            <li class="flex flex-wrap items-center gap-x-2">
               <span class="text-gray-500">Max:</span><span class="[font-variant-numeric:tabular-nums]">${S.maxVal}</span>
+            </li>
+            <li class="flex flex-wrap items-center gap-x-2">
+              <span class="text-gray-500">Mean:</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.mean)}</span>
               <span class="text-gray-300">·</span>
-              <span class="text-gray-500">IQR:</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.iqr)}</span>
+              <span class="text-gray-500">Median:</span><span class="[font-variant-numeric:tabular-nums]">${fmt(S.median)}</span>
+              <span class="text-gray-300">·</span>
+              <span class="text-gray-500">Mode:</span><span class="[font-variant-numeric:tabular-nums]">${S.mode}</span>
             </li>
           </ul>
         </div>

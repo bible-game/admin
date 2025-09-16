@@ -6,5 +6,4 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->get('/passage', 'Passage::index');
 $routes->get('/passage/heatmap-data', 'Passage::getHeatmapData');

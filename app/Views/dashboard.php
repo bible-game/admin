@@ -26,9 +26,30 @@
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center mb-8">Dashboard</h1>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 gap-8">
             <div>
-                <h2 class="text-2xl font-bold mb-4">Admin Leaderboard</h2>
+                <div class="card p-4 md:p-6">
+                    <div class="flex items-center justify-between gap-4 flex-wrap mb-4">
+                        <div class="text-sm text-gray-600">Random daily passages since <?php if (isset($earliestDate)) { try { echo (new DateTime($earliestDate))->format('jS F Y'); } catch (Exception $e) { echo 'the beginning of time'; } } else { echo 'the beginning of time'; } ?></div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="text-gray-500">Less</span>
+                            <div class="legend-swatch" style="background:var(--gh-0)"></div>
+                            <div class="legend-swatch" style="background:var(--gh-1)"></div>
+                            <div class="legend-swatch" style="background:var(--gh-2)"></div>
+                            <div class="legend-swatch" style="background:var(--gh-3)"></div>
+                            <div class="legend-swatch" style="background:var(--gh-4)"></div>
+                            <span class="text-gray-500 ml-1">More</span>
+                        </div>
+                    </div>
+
+                    <div id="heatmap" class="hm-wrap">
+                        <div id="spinner" class="spinner"></div>
+                    </div>
+                    <?php include __DIR__ . '/stats_card.php'; ?>
+                </div>
+            </div>
+
+            <div>
                 <?php if (isset($error)): ?>
                     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
                         <span class="block sm:inline"><?= esc($error) ?></span>
@@ -65,22 +86,22 @@
                             <tbody>
                                 <?php $rank = 1; foreach ($leaderboard as $user): ?>
                                     <tr>
-                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= $rank++ ?></p>
                                         </td>
-                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= esc($user['id']) ?></p>
                                         </td>
-                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= esc($user['firstname']) . " " . esc($user['lastname']) ?></p>
                                         </td>
-                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= esc($user['gameStars']) ?></p>
                                         </td>
-                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= esc($user['reviewStars']) ?></p>
                                         </td>
-                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= esc($user['gameStars']) + esc($user['reviewStars']) ?></p>
                                         </td>
                                     </tr>
@@ -89,29 +110,6 @@
                         </table>
                     </div>
                 <?php endif; ?>
-            </div>
-
-            <div>
-                <h2 class="text-2xl font-bold mb-4">Passage Heatmap</h2>
-                <div class="card p-4 md:p-6">
-                    <div class="flex items-center justify-between gap-4 flex-wrap mb-4">
-                        <div class="text-sm text-gray-600">Random daily passages since <?php if (isset($earliestDate)) { try { echo (new DateTime($earliestDate))->format('jS F Y'); } catch (Exception $e) { echo 'the beginning of time'; } } else { echo 'the beginning of time'; } ?></div>
-                        <div class="flex items-center gap-2 text-xs">
-                            <span class="text-gray-500">Less</span>
-                            <div class="legend-swatch" style="background:var(--gh-0)"></div>
-                            <div class="legend-swatch" style="background:var(--gh-1)"></div>
-                            <div class="legend-swatch" style="background:var(--gh-2)"></div>
-                            <div class="legend-swatch" style="background:var(--gh-3)"></div>
-                            <div class="legend-swatch" style="background:var(--gh-4)"></div>
-                            <span class="text-gray-500 ml-1">More</span>
-                        </div>
-                    </div>
-
-                    <div id="heatmap" class="hm-wrap">
-                        <div id="spinner" class="spinner"></div>
-                    </div>
-                    <?php include __DIR__ . '/stats_card.php'; ?>
-                </div>
             </div>
         </div>
     </div>
@@ -138,7 +136,7 @@
     window.passageHeatmapData = data;
 
             // ---- Visual constants (bigger cells) ----
-    const CELL = 12;      // <— make this 18/20 if you want even bigger
+    const CELL = 10;      // <— make this 18/20 if you want even bigger
     const GAP  = 3;
     const ROWG = 3;
     const M = { top:8, right:8, bottom:8, left:8 };
