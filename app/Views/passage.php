@@ -16,10 +16,12 @@
         .card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;box-shadow:0 4px 18px rgba(0,0,0,.06);}
         .hm-cell{shape-rendering:crispEdges;rx:2px;ry:2px;transition:transform .06s ease-out,stroke .06s ease-out,stroke-width .06s ease-out;}
         .hm-cell:hover{cursor: pointer}
-        .hm-wrap{overflow-x:auto;}
+        .hm-wrap{overflow-x:auto;position:relative;min-height:120px;}
         .legend-swatch{width:12px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.05);}
         .hm-tooltip{position:fixed;z-index:50;pointer-events:none;background:#000;color:#fff;padding:.5rem .6rem;border-radius:.5rem;font-size:.75rem;line-height:1.1rem;box-shadow:0 6px 24px rgba(0,0,0,.25);opacity:0;transform:translate(-50%,-140%);transition:opacity .08s ease-out,transform .08s ease-out;white-space:nowrap;}
         .hm-tooltip[data-show="1"]{opacity:1;transform:translate(-50%,-160%);}
+        .spinner{position:absolute;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border:4px solid rgba(0,0,0,.1);border-left-color:#09f;border-radius:50%;animation:spin 1s linear infinite;}
+        @keyframes spin{to{transform:rotate(360deg);}}
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900">
@@ -27,7 +29,7 @@
     <h1 class="text-xl font-semibold mb-4">Passage Heatmap</h1>
     <div class="card p-4 md:p-6">
         <div class="flex items-center justify-between gap-4 flex-wrap mb-4">
-            <div class="text-sm text-gray-600">Random daily passages since {date}</div>
+            <div class="text-sm text-gray-600">Random daily passages since <?php if (isset($earliestDate)) { try { echo (new DateTime($earliestDate))->format('jS F Y'); } catch (Exception $e) { echo 'the beginning of time'; } } else { echo 'the beginning of time'; } ?></div>
             <div class="flex items-center gap-2 text-xs">
                 <span class="text-gray-500">Less</span>
                 <div class="legend-swatch" style="background:var(--gh-0)"></div>
@@ -39,24 +41,35 @@
             </div>
         </div>
 
-        <div id="heatmap" class="hm-wrap"></div>
+        <div id="heatmap" class="hm-wrap">
+            <div id="spinner" class="spinner"></div>
+        </div>
+        <?php include __DIR__ . '/stats_card.php'; ?>
     </div>
 </div>
 
 <div id="hmTooltip" class="hm-tooltip" role="tooltip" aria-live="polite"></div>
 
+<script>window.passageHeatmapData = <?php echo json_encode($heatmapData ?? []); ?>;</script>
 <script>
-    // ---- Data from PHP ----
-    const raw = <?php echo json_encode($heatmapData ?? []); ?>;
-    const data = (raw || []).map(d => ({
-        bookName: d.bookName ?? d.book ?? 'Unknown',
-        chapter: d.chapter ?? d.ch ?? '',
-        value: +d.value || 0,
-        division: d.division ?? '',
-        testament: d.testament ?? ''
-    }));
+    const wrap = d3.select('#heatmap');
+    const spinner = document.getElementById('spinner');
 
-    // ---- Visual constants (bigger cells) ----
+    fetch('/passage/heatmap-data')
+    .then(response => response.json())
+    .then(raw => {
+        spinner.style.display = 'none';
+        const data = (raw || []).map(d => ({
+            bookName: d.bookName ?? d.book ?? 'Unknown',
+            chapter: d.chapter ?? d.ch ?? '',
+            value: +d.value || 0,
+            division: d.division ?? '',
+            testament: d.testament ?? ''
+        }))
+
+    window.passageHeatmapData = data;
+
+            // ---- Visual constants (bigger cells) ----
     const CELL = 12;      // <— make this 18/20 if you want even bigger
     const GAP  = 3;
     const ROWG = 3;
@@ -113,7 +126,6 @@
     const colorOf = ghBucketScale(data.map(d => d.value));
 
     // ---- Build base SVG once ----
-    const wrap = d3.select('#heatmap');
     const svg  = wrap.append('svg');
     const g    = svg.append('g');
 
@@ -192,6 +204,11 @@
             const r = el.getBoundingClientRect();
             showTip(el.innerHTML, [r.x + r.width/2, r.y]);
         }
+    });
+    }).catch(error => {
+        spinner.style.display = 'none';
+        console.error('Error fetching heatmap data:', error);
+        wrap.html('<p class="text-red-500">Could not load heatmap data.</p>');
     });
 </script>
 </body>

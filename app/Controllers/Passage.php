@@ -37,8 +37,28 @@ class Passage extends BaseController
 
     public function index(): string
     {
-        $data = ['heatmapData' => $this->generateHeatmapData()];
-        return view('passage', $data);
+        $earliestDate = $this->getEarliestDate();
+        return view('passage', ['earliestDate' => $earliestDate]);
+    }
+
+    public function getHeatmapData()
+    {
+        $data = $this->generateHeatmapData();
+        return $this->response->setJSON($data);
+    }
+
+    private function getEarliestDate(): ?string
+    {
+        $historyUrl = $this->passageServiceBaseUrl . '/daily/history';
+        $historyResponse = $this->fetchUrl($historyUrl);
+        $dates = json_decode($historyResponse, true);
+
+        if (is_array($dates) && !empty($dates)) {
+            usort($dates, static fn($a, $b) => strtotime($a) <=> strtotime($b));
+            return $dates[0];
+        }
+
+        return null;
     }
 
     private function generateHeatmapData(): array

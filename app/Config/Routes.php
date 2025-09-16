@@ -8,3 +8,4 @@ use CodeIgniter\Router\RouteCollection;
 //$routes->get('/', 'Home::index');
 $routes->get('/', 'Admin::index');
 $routes->get('/passage', 'Passage::index');
+$routes->get('/passage/heatmap-data', 'Passage::getHeatmapData');
