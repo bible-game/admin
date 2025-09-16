@@ -27,7 +27,7 @@
     <h1 class="text-xl font-semibold mb-4">Passage Heatmap</h1>
     <div class="card p-4 md:p-6">
         <div class="flex items-center justify-between gap-4 flex-wrap mb-4">
-            <div class="text-sm text-gray-600">Large cells, auto-wrap rows</div>
+            <div class="text-sm text-gray-600">Random daily passages since {date}</div>
             <div class="flex items-center gap-2 text-xs">
                 <span class="text-gray-500">Less</span>
                 <div class="legend-swatch" style="background:var(--gh-0)"></div>
@@ -40,7 +40,6 @@
         </div>
 
         <div id="heatmap" class="hm-wrap"></div>
-        <p class="text-xs text-gray-500 mt-3">Hover to see details. Grid wraps into new rows as needed.</p>
     </div>
 </div>
 
@@ -127,19 +126,16 @@
         .attr('width', CELL)
         .attr('height', CELL)
         .attr('fill', d => colorOf(d.value))
-        .attr('aria-label', d => `${d.value} at ${[d.bookName, d.chapter].filter(Boolean).join(' ')}`)
-        .append('title')
-        .text(d => `${d.value} • ${[d.bookName, d.chapter].filter(Boolean).join(' ')}`);
+        .attr('aria-label', d => `${d.value} at ${[d.bookName, d.chapter].filter(Boolean).join(' ')}`);
 
     // Tooltip
     const tooltip = d3.select('#hmTooltip');
     function tipHTML(d){
         const count = d.value;
-        const label = count === 0 ? 'No' : count.toLocaleString();
-        const unit  = count === 1 ? 'passage' : 'passages';
+        const label = count === 0 ? '0' : count.toLocaleString();
         const loc   = [d.bookName, d.chapter].filter(Boolean).join(' ');
         const meta  = [d.division, d.testament].filter(Boolean).join(' • ');
-        return `<div><strong>${label} ${unit}</strong>${loc ? ` in <strong>${loc}</strong>`:''}</div>${meta?`<div class="opacity-80">${meta}</div>`:''}`;
+        return `<div><strong>${loc}</strong> - ${label}</div>${meta?`<div class="opacity-80">${meta}</div>`:''}`;
     }
     function showTip(html, [x,y]){
         if (!html) return hideTip();
