@@ -63,22 +63,22 @@
                         <table class="min-w-full leading-normal">
                             <thead>
                                 <tr>
-                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Rank
                                     </th>
-                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         User Id
                                     </th>
-                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Name
                                     </th>
-                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Game Stars
                                     </th>
-                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Review Stars
                                     </th>
-                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                         Total Stars
                                     </th>
                                 </tr>
@@ -86,22 +86,22 @@
                             <tbody>
                                 <?php $rank = 1; foreach ($leaderboard as $user): ?>
                                     <tr>
-                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm text-center">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= $rank++ ?></p>
                                         </td>
-                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm text-center">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= esc($user['id']) ?></p>
                                         </td>
-                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm text-center">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= esc($user['firstname']) . " " . esc($user['lastname']) ?></p>
                                         </td>
-                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm text-center">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= esc($user['gameStars']) ?></p>
                                         </td>
-                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm text-center">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= esc($user['reviewStars']) ?></p>
                                         </td>
-                                        <td class="p-3 border-b border-gray-200 bg-white text-sm">
+                                        <td class="p-3 border-b border-gray-200 bg-white text-sm text-center">
                                             <p class="text-gray-900 whitespace-no-wrap"><?= esc($user['gameStars']) + esc($user['reviewStars']) ?></p>
                                         </td>
                                     </tr>
